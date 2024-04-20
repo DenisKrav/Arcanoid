@@ -1,3 +1,5 @@
+
+
 import pygame
 import sys
 
@@ -43,13 +45,44 @@ class Label(Area):
         screen.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
 
 platform = Picture("images/platform.png", int(screenWidth * 0.35), int(screenHeight * 0.8), 200, 50, (209, 161, 209))
+platform_speed = 10
+
+enemies = []
+num_rows = 6
+num_columns = 15
+enemy_width = 30
+enemy_height = 30
+enemy_padding = 9
+start_x = 10
+start_y = 10
+for row in range(num_rows):
+    for column in range(num_columns):
+        x = start_x + column * (enemy_width + enemy_padding)
+        y = start_y + row * (enemy_height + enemy_padding)
+        new_enemy = Picture("images/enemy.png", x, y, enemy_width, enemy_height, (209, 161, 209))
+        enemies.append(new_enemy)
+
+ball = Picture("images/ball.png", screenWidth * 0.5, screenHeight * 0.5, enemy_width, enemy_height, (209, 161, 209))
 
 while True:
+    screen.fill(back)
     platform.draw_picture()
+
+    for enemy in enemies:
+        enemy.draw_picture()
+
+    ball.draw_picture()
+
+    keys = pygame.key.get_pressed()
+    if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and platform.rect.x + platform.rect.width != screenWidth:
+        platform.rect.x += platform_speed
+    if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and platform.rect.x != 0:
+        platform.rect.x -= platform_speed
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
+    clock.tick(40)
     pygame.display.update()
