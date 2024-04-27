@@ -65,8 +65,15 @@ ball = Picture("images/ball.png", screenWidth * 0.5, screenHeight * 0.5, enemy_w
 ball_speed_x = 5
 ball_speed_y = -5
 
+score = 0
+score_label = Label(int(screenWidth * 0.05), int(screenHeight * 0.93), 50, 20, back)
+score_label.set_text(f"Рахунок: {score}", 25, (71, 69, 69))
+
 while True:
     screen.fill(back)
+
+    score_label.draw_text()
+
     platform.draw_picture()
 
     for enemy in enemies:
@@ -89,6 +96,8 @@ while True:
         if ball.rect.colliderect(enemy.rect):
             enemies.remove(enemy)
             ball_speed_y = -ball_speed_y
+            score += 1
+            score_label.set_text(f"Рахунок: {score}", 25, (71, 69, 69))
             break
 
     if ball.rect.bottom >= screenHeight or len(enemies) == 0:
