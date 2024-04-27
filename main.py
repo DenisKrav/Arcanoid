@@ -1,5 +1,3 @@
-
-
 import pygame
 import sys
 
@@ -61,8 +59,11 @@ for row in range(num_rows):
         y = start_y + row * (enemy_height + enemy_padding)
         new_enemy = Picture("images/enemy.png", x, y, enemy_width, enemy_height, (209, 161, 209))
         enemies.append(new_enemy)
+enemy_count = enemy_width * enemy_height #################################3
 
 ball = Picture("images/ball.png", screenWidth * 0.5, screenHeight * 0.5, enemy_width, enemy_height, (209, 161, 209))
+ball_speed_x = 5
+ball_speed_y = -5
 
 while True:
     screen.fill(back)
@@ -72,6 +73,27 @@ while True:
         enemy.draw_picture()
 
     ball.draw_picture()
+
+    ball.rect.x += ball_speed_x
+    ball.rect.y += ball_speed_y
+
+    if ball.rect.left <= 0 or ball.rect.right >= screenWidth:
+        ball_speed_x = -ball_speed_x
+    if ball.rect.top <= 0:
+        ball_speed_y = -ball_speed_y
+
+    if ball.rect.colliderect(platform.rect):
+        ball_speed_y = -ball_speed_y
+
+    for enemy in enemies:
+        if ball.rect.colliderect(enemy.rect):
+            enemies.remove(enemy)
+            ball_speed_y = -ball_speed_y
+            break
+
+    if ball.rect.bottom >= screenHeight or len(enemies) == 0:
+        pygame.quit()
+        sys.exit()
 
     keys = pygame.key.get_pressed()
     if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and platform.rect.x + platform.rect.width != screenWidth:
